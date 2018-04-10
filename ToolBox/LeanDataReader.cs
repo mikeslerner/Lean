@@ -74,7 +74,7 @@ namespace QuantConnect.ToolBox
 
             _date = date;
             _zipPath = fileInfo.FullName;
-            _zipentry = fileInfo.Name;
+            _zipentry = null;
             _config = config;
         }
 
