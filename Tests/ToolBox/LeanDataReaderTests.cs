@@ -45,7 +45,7 @@ namespace QuantConnect.Tests.ToolBox
             var filepath = Path.Combine(_dataDirectory, securityType, market, minute, ticker, fileName);
 
             SecurityType securityTypeEnum;
-            Enum.TryParse<SecurityType>(securityType, out securityTypeEnum);
+            Enum.TryParse<SecurityType>(securityType, true, out securityTypeEnum);
 
             var symbol = Symbol.Create(ticker, securityTypeEnum, market);
 
