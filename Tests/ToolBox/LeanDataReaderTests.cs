@@ -48,6 +48,8 @@ namespace QuantConnect.Tests.ToolBox
         [TestCase("cfd", "oanda", "hour", "xauusd", "xauusd.zip", 69081, 80935843.1265)]
         [TestCase("crypto", "gdax", "second", "btcusd", "20161008_trade.zip", 3453, 2137057.57)]
         [TestCase("crypto", "gdax", "second", "btcusd", "20161009_quote.zip", 1438, 889045.065)]
+        [TestCase("crypto", "gdax", "daily", "btcusd", "btcusd_trade.zip", 1025, 1020535.83)]
+        [TestCase("crypto", "gdax", "daily", "btcusd", "btcusd_quote.zip", 788, 478805.7124)]
         public void ReadLeanDataFromFilePath(string securityType, string market, string resolution, string ticker, string fileName, int rowsInfile, decimal sumValue)
         {
             // Arrange
@@ -62,7 +64,7 @@ namespace QuantConnect.Tests.ToolBox
             }
 
             SecurityType securityTypeEnum;
-            Enum.TryParse<SecurityType>(securityType, true, out securityTypeEnum);
+            Enum.TryParse(securityType, true, out securityTypeEnum);
 
             var symbol = Symbol.Create(ticker, securityTypeEnum, market);
 
