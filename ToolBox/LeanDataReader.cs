@@ -55,17 +55,20 @@ namespace QuantConnect.ToolBox
             Symbol symbol;
             DateTime date;
             Resolution resolution;
-            var fileInfo = new FileInfo(filepath);
 
+            var fileInfo = new FileInfo(filepath);
             if (!LeanData.TryParsePath(fileInfo.FullName, out symbol, out date, out resolution))
             {
                 throw new ArgumentException($"File {filepath} cannot be parsed.");
             }
+
             var marketHoursDataBase = MarketHoursDatabase.FromDataFolder();
             var dataTimeZone = marketHoursDataBase.GetDataTimeZone(symbol.ID.Market, symbol, symbol.SecurityType);
             var exchangeTimeZone = marketHoursDataBase.GetExchangeHours(symbol.ID.Market, symbol, symbol.SecurityType).TimeZone;
+            var tickType = LeanData.GetCommonTickType(symbol.SecurityType);
+            var dataType = LeanData.GetDataType(resolution, tickType);
 
-            var config = new SubscriptionDataConfig(symbol.GetType(), symbol, resolution,
+            var config = new SubscriptionDataConfig(dataType, symbol, resolution,
                                                     dataTimeZone, exchangeTimeZone,
                                                     fillForward: false, extendedHours: true, isInternalFeed: true);
 

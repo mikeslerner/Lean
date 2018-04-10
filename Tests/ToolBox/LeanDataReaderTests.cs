@@ -38,18 +38,22 @@ namespace QuantConnect.Tests.ToolBox
         DateTime _fromDate = new DateTime(2013, 10, 7);
         DateTime _toDate = new DateTime(2013, 10, 11);
 
-        [Test]
-        public void ReadLeanDataFromFilePath()
+        [TestCase("equity", "usa", "minute", "aapl", "20140605_trade.zip")]
+        public void ReadLeanDataFromFilePath(string securityType, string market, string minute, string ticker, string fileName)
         {
             // Arrange
-            var filepath = Path.Combine(new string[]
-                                            {_dataDirectory, "equity", "usa", "minute", "aapl", "20140605_trade.zip"});
+            var filepath = Path.Combine(_dataDirectory, securityType, market, minute, ticker, fileName);
+
+            SecurityType securityTypeEnum;
+            Enum.TryParse<SecurityType>(securityType, out securityTypeEnum);
+
+            var symbol = Symbol.Create(ticker, securityTypeEnum, market);
+
             var ldr = new LeanDataReader(filepath);
             // Act
             var data = ldr.Parse().ToArray();
             // Assert
-            Assert.AreEqual(data.First().DataType, MarketDataType.TradeBar);
-            Assert.AreEqual(data.First().Symbol.Value, "AAPL");
+            Assert.True(symbol.Equals(data.First().Symbol));
         }
 
         #region futures
