@@ -38,11 +38,16 @@ namespace QuantConnect.Tests.ToolBox
         DateTime _fromDate = new DateTime(2013, 10, 7);
         DateTime _toDate = new DateTime(2013, 10, 11);
 
-        [TestCase("equity", "usa", "minute", "aapl", "20140605_trade.zip")]
-        public void ReadLeanDataFromFilePath(string securityType, string market, string minute, string ticker, string fileName)
+        [TestCase("equity", "usa", "minute", "aapl", "20140605_trade.zip", 658, 425068.8450)]
+        [TestCase("equity", "usa", "second", "ibm", "20131010_trade.zip", 4409, 809851.9580)]
+        [TestCase("equity", "usa", "tick", "bac", "20131011_trade.zip", 112230, 1592319.5871)]
+        [TestCase("forex", "fxcm", "minute", "eurusd", "20140502_quote.zip", 958, 1327.638085)]
+        [TestCase("forex", "fxcm", "second", "nzdusd", "20140514_quote.zip", 25895, 22432.757185)]
+        [TestCase("forex", "fxcm", "tick", "eurusd", "20140507_quote.zip", 89826, 125073.092245)]
+        public void ReadLeanDataFromFilePath(string securityType, string market, string resolution, string ticker, string fileName, int rowsInfile, decimal sumValue)
         {
             // Arrange
-            var filepath = Path.Combine(_dataDirectory, securityType, market, minute, ticker, fileName);
+            var filepath = Path.Combine(_dataDirectory, securityType, market, resolution, ticker, fileName);
 
             SecurityType securityTypeEnum;
             Enum.TryParse<SecurityType>(securityType, true, out securityTypeEnum);
@@ -54,6 +59,8 @@ namespace QuantConnect.Tests.ToolBox
             var data = ldr.Parse().ToArray();
             // Assert
             Assert.True(symbol.Equals(data.First().Symbol));
+            Assert.AreEqual(data.Length, rowsInfile);
+            Assert.AreEqual(data.Sum(c=>c.Value), sumValue);
         }
 
         #region futures
