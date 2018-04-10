@@ -827,6 +827,11 @@ namespace QuantConnect.Util
                     date = DateTime.ParseExact(info[startIndex + 4].Substring(0, 8), DateFormat.EightCharacter, null);
                 }
 
+                if (securityType == SecurityType.Crypto)
+                {
+                    ticker = ticker.Split('_').First();
+                }
+
                 symbol = Symbol.Create(ticker, securityType, market);
             }
             catch (Exception ex)
