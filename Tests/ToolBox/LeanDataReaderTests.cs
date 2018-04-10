@@ -19,6 +19,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
+using QuantConnect;
 using QuantConnect.Data;
 using QuantConnect.Data.Auxiliary;
 using QuantConnect.Securities;
@@ -26,18 +27,32 @@ using QuantConnect.ToolBox;
 using QuantConnect.Util;
 using QuantConnect.Lean.Engine.DataFeeds;
 using QuantConnect.Data.Consolidators;
+using QuantConnect.Data.Market;
 
 namespace QuantConnect.Tests.ToolBox
 {
     [TestFixture]
     public class LeanDataReaderTests
     {
-        #region futures
-
         string _dataDirectory = "../../../Data/";
         DateTime _fromDate = new DateTime(2013, 10, 7);
         DateTime _toDate = new DateTime(2013, 10, 11);
 
+        [Test]
+        public void ReadLeanDataFromFilePath()
+        {
+            // Arrange
+            var filepath = Path.Combine(new string[]
+                                            {_dataDirectory, "equity", "usa", "minute", "aapl", "20140605_trade.zip"});
+            var ldr = new LeanDataReader(filepath);
+            // Act
+            var data = ldr.Parse().ToArray();
+            // Assert
+            Assert.AreEqual(data.First().DataType, MarketDataType.TradeBar);
+            Assert.AreEqual(data.First().Symbol.Value, "AAPL");
+        }
+
+        #region futures
 
         [Test]
         public void ReadFutureChainData()

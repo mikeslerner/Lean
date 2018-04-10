@@ -15,8 +15,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Ionic.Zip;
 using QuantConnect.Data;
+using QuantConnect.Securities;
 using QuantConnect.Util;
 
 namespace QuantConnect.ToolBox
@@ -45,6 +47,31 @@ namespace QuantConnect.ToolBox
             _date = date;
             _zipPath = LeanData.GenerateZipFilePath(dataFolder, symbol, date,  resolution, config.TickType);
             _zipentry = LeanData.GenerateZipEntryName(symbol, date, resolution, config.TickType);
+            _config = config;
+        }
+
+        public LeanDataReader(string filepath)
+        {
+            Symbol symbol;
+            DateTime date;
+            Resolution resolution;
+            var fileInfo = new FileInfo(filepath);
+
+            if (!LeanData.TryParsePath(fileInfo.FullName, out symbol, out date, out resolution))
+            {
+                throw new ArgumentException($"File {filepath} cannot be parsed.");
+            }
+            var marketHoursDataBase = MarketHoursDatabase.FromDataFolder();
+            var dataTimeZone = marketHoursDataBase.GetDataTimeZone(symbol.ID.Market, symbol, symbol.SecurityType);
+            var exchangeTimeZone = marketHoursDataBase.GetExchangeHours(symbol.ID.Market, symbol, symbol.SecurityType).TimeZone;
+
+            var config = new SubscriptionDataConfig(symbol.GetType(), symbol, resolution,
+                                                    dataTimeZone, exchangeTimeZone,
+                                                    fillForward: false, extendedHours: true, isInternalFeed: true);
+
+            _date = date;
+            _zipPath = fileInfo.FullName;
+            _zipentry = fileInfo.Name;
             _config = config;
         }
 
