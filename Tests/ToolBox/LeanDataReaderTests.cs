@@ -38,46 +38,6 @@ namespace QuantConnect.Tests.ToolBox
         DateTime _fromDate = new DateTime(2013, 10, 7);
         DateTime _toDate = new DateTime(2013, 10, 11);
 
-        [TestCase("equity", "usa", "daily", "aig", "aig.zip", 4433, 267747.235)]
-        [TestCase("equity", "usa", "minute", "aapl", "20140605_trade.zip", 658, 425068.8450)]
-        [TestCase("equity", "usa", "second", "ibm", "20131010_trade.zip", 4409, 809851.9580)]
-        [TestCase("equity", "usa", "tick", "bac", "20131011_trade.zip", 112230, 1592319.5871)]
-        [TestCase("forex", "fxcm", "minute", "eurusd", "20140502_quote.zip", 958, 1327.638085)]
-        [TestCase("forex", "fxcm", "second", "nzdusd", "20140514_quote.zip", 25895, 22432.757185)]
-        [TestCase("forex", "fxcm", "tick", "eurusd", "20140507_quote.zip", 89826, 125073.092245)]
-        [TestCase("cfd", "oanda", "hour", "xauusd", "xauusd.zip", 69081, 80935843.1265)]
-        [TestCase("crypto", "gdax", "second", "btcusd", "20161008_trade.zip", 3453, 2137057.57)]
-        [TestCase("crypto", "gdax", "second", "btcusd", "20161009_quote.zip", 1438, 889045.065)]
-        [TestCase("crypto", "gdax", "minute", "ethusd", "20170903_trade.zip", 1440, 510470.66)]
-        [TestCase("crypto", "gdax", "minute", "btcusd", "20161007_quote.zip", 1438, 884448.535)]
-        [TestCase("crypto", "gdax", "daily", "btcusd", "btcusd_trade.zip", 1025, 1020535.83)]
-        [TestCase("crypto", "gdax", "daily", "btcusd", "btcusd_quote.zip", 788, 954122.585)]
-        public void ReadLeanDataFromFilePath(string securityType, string market, string resolution, string ticker, string fileName, int rowsInfile, decimal sumValue)
-        {
-            // Arrange
-            string filepath;
-            if (resolution == "daily" || resolution == "hour")
-            {
-                filepath = Path.Combine(_dataDirectory, securityType, market, resolution, fileName);
-            }
-            else
-            {
-                filepath = Path.Combine(_dataDirectory, securityType, market, resolution, ticker, fileName);
-            }
-
-            SecurityType securityTypeEnum;
-            Enum.TryParse(securityType, true, out securityTypeEnum);
-            var symbol = Symbol.Create(ticker, securityTypeEnum, market);
-
-            // Act
-            var ldr = new LeanDataReader(filepath);
-            var data = ldr.Parse().ToArray();
-            // Assert
-            Assert.True(symbol.Equals(data.First().Symbol));
-            Assert.AreEqual(data.Length, rowsInfile);
-            Assert.AreEqual(data.Sum(c=>c.Value), sumValue);
-        }
-
         #region futures
 
         [Test]
@@ -86,9 +46,9 @@ namespace QuantConnect.Tests.ToolBox
             var canonicalFutures = new Dictionary<Symbol,string>()
             {
                 { Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.USA),
-                "ESZ13|ESH14|ESM14|ESU14|ESZ14" },
+                    "ESZ13|ESH14|ESM14|ESU14|ESZ14" },
                 {Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.USA),
-                "GCV13|GCX13|GCZ13|GCG14|GCJ14|GCM14|GCQ14|GCV14|GCZ14|GCG15|GCJ15|GCM15|GCQ15|GCZ15|GCM16|GCZ16|GCM17|GCZ17|GCM18|GCZ18|GCM19"},
+                    "GCV13|GCX13|GCZ13|GCG14|GCJ14|GCM14|GCQ14|GCV14|GCZ14|GCG15|GCJ15|GCM15|GCQ15|GCZ15|GCM16|GCZ16|GCM17|GCZ17|GCM18|GCZ18|GCM19"},
             };
 
             var tickTypes = new[] { TickType.Trade, TickType.Quote, TickType.OpenInterest };
@@ -125,19 +85,19 @@ namespace QuantConnect.Tests.ToolBox
 
             //load future chain first
             var config = new SubscriptionDataConfig(typeof(ZipEntryName), baseFuture, res,
-                TimeZones.NewYork, TimeZones.NewYork, false, false, false, false, tickType);
+                                                    TimeZones.NewYork, TimeZones.NewYork, false, false, false, false, tickType);
 
             var factory = new ZipEntryNameSubscriptionDataSourceReader(config, date, false);
 
             return factory.Read(new SubscriptionDataSource(filePath, SubscriptionTransportMedium.LocalFile, FileFormat.ZipEntryName))
-                   .Select(s => s.Symbol).ToList();
+                          .Select(s => s.Symbol).ToList();
         }
 
         private string LoadFutureData(Symbol future, TickType tickType, Resolution res)
         {
             var dataType = LeanData.GetDataType(res, tickType);
             var config = new SubscriptionDataConfig(dataType, future, res,
-                TimeZones.NewYork, TimeZones.NewYork, false, false, false, false, tickType);
+                                                    TimeZones.NewYork, TimeZones.NewYork, false, false, false, false, tickType);
 
             var date = _fromDate;
 
@@ -166,13 +126,13 @@ namespace QuantConnect.Tests.ToolBox
             var tickTypes = new[] {TickType.Trade, TickType.Quote, TickType.OpenInterest };
 
             var futures = new[] { Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.USA),
-                        Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.USA)};
+                Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.USA)};
             var resolutions = new[] { Resolution.Hour, Resolution.Daily };
 
             foreach (var future in futures)
-                foreach (var res in resolutions)
-                    foreach (var tickType in tickTypes)
-                        ConvertMinuteFuturesData(future, tickType, res);
+            foreach (var res in resolutions)
+            foreach (var tickType in tickTypes)
+                ConvertMinuteFuturesData(future, tickType, res);
         }
 
         private void ConvertMinuteFuturesData(Symbol canonical, TickType tickType, Resolution outputResolution, Resolution inputResolution = Resolution.Minute)
@@ -210,8 +170,8 @@ namespace QuantConnect.Tests.ToolBox
                     {
                         futures[future.Value] = future;
                         var config = new SubscriptionDataConfig(LeanData.GetDataType(outputResolution, tickType),
-                                future, inputResolution,TimeZones.NewYork, TimeZones.NewYork,
-                                false, false, false, false, tickType);
+                                                                future, inputResolution,TimeZones.NewYork, TimeZones.NewYork,
+                                                                false, false, false, false, tickType);
                         configs[future.Value] = config;
 
                         consolidators[future.Value] = tickTypeConsolidatorMap[tickType].Invoke();
@@ -262,5 +222,58 @@ namespace QuantConnect.Tests.ToolBox
         }
 
         #endregion
+
+        [Test, TestCaseSource(nameof(SpotMarketCases))]
+        public void ReadLeanDataFromFilePath(string securityType, string market, string resolution, string ticker, string fileName, int rowsInfile, double sumValue)
+        {
+            // Arrange
+            var filepath = GenerateFilepathForTesting(_dataDirectory, securityType, market, resolution, ticker, fileName);
+
+            SecurityType securityTypeEnum;
+            Enum.TryParse(securityType, true, out securityTypeEnum);    
+            var symbol = Symbol.Create(ticker, securityTypeEnum, market);
+
+            // Act
+            var ldr = new LeanDataReader(filepath);
+            var data = ldr.Parse().ToArray();
+            // Assert
+            Assert.True(symbol.Equals(data.First().Symbol));
+            Assert.AreEqual(data.Length, rowsInfile);
+            Assert.AreEqual(data.Sum(c=>c.Value), sumValue);
+        }
+
+        public static object[] SpotMarketCases =
+        {
+            new object[] {"equity", "usa", "daily", "aig", "aig.zip", 4433, 267747.235},
+            new object[] {"equity", "usa", "minute", "aapl", "20140605_trade.zip", 658, 425068.8450},
+            new object[] {"equity", "usa", "second", "ibm", "20131010_trade.zip", 4409, 809851.9580},
+            new object[] {"equity", "usa", "tick", "bac", "20131011_trade.zip", 112230, 1592319.5871},
+            new object[] {"forex", "fxcm", "minute", "eurusd", "20140502_quote.zip", 958, 1327.638085},
+            new object[] {"forex", "fxcm", "second", "nzdusd", "20140514_quote.zip", 25895, 22432.757185},
+            new object[] {"forex", "fxcm", "tick", "eurusd", "20140507_quote.zip", 89826, 125073.092245},
+            new object[] {"cfd", "oanda", "hour", "xauusd", "xauusd.zip", 69081, 80935843.1265},
+            new object[] {"crypto", "gdax", "second", "btcusd", "20161008_trade.zip", 3453, 2137057.57},
+            new object[] {"crypto", "gdax", "second", "btcusd", "20161009_quote.zip", 1438, 889045.065},
+            new object[] {"crypto", "gdax", "minute", "ethusd", "20170903_trade.zip", 1440, 510470.66},
+            new object[] {"crypto", "gdax", "minute", "btcusd", "20161007_quote.zip", 1438, 884448.535},
+            new object[] {"crypto", "gdax", "daily", "btcusd", "btcusd_trade.zip", 1025, 1020535.83},
+            new object[] {"crypto", "gdax", "daily", "btcusd", "btcusd_quote.zip", 788, 954122.585}
+        };
+
+        public static string GenerateFilepathForTesting(string dataDirectory, string securityType, string market, string resolution, string ticker,
+                                                 string fileName)
+        {
+            string filepath;
+            if (resolution == "daily" || resolution == "hour")
+            {
+                filepath = Path.Combine(dataDirectory, securityType, market, resolution, fileName);
+            }
+            else
+            {
+                filepath = Path.Combine(dataDirectory, securityType, market, resolution, ticker, fileName);
+            }
+            return filepath;
+        }
+
     }
 }

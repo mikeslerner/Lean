@@ -26,6 +26,8 @@ using QuantConnect.Securities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using QuantConnect.Tests.ToolBox;
+using QuantConnect.ToolBox;
 
 namespace QuantConnect.Tests.Engine.DataFeeds
 {
@@ -359,6 +361,23 @@ namespace QuantConnect.Tests.Engine.DataFeeds
                     Assert.AreEqual(expected, transactions);
                 }
             }
+        }
+
+        private object[] SpotMarketCases => LeanDataReaderTests.SpotMarketCases;
+
+        [Test, TestCaseSource(nameof(SpotMarketCases))]
+        public void HandlesLeanDataReaderOutput(string securityType, string market, string resolution, string ticker, string fileName, int rowsInfile, double sumValue)
+        {
+            // Arrange
+            var dataFolder = "../../../Data";
+            var filepath = LeanDataReaderTests.GenerateFilepathForTesting(dataFolder, securityType, market, resolution, ticker, fileName);
+            var leanDataReader = new LeanDataReader(filepath);
+            var data = leanDataReader.Parse().ToArray();
+            var converter = new PandasConverter();
+            // Act
+            dynamic df = converter.GetDataFrame(data);
+            // Assert
+            Assert.AreEqual(df.shape[0].AsManagedObject(typeof(int)), rowsInfile);
         }
 
         public IEnumerable<Slice> GetHistory<T>(Symbol symbol, Resolution resolution, IEnumerable<T> data)
