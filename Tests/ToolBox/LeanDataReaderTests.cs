@@ -40,25 +40,10 @@ namespace QuantConnect.Tests.ToolBox
 
         #region futures
 
-            SecurityType securityTypeEnum;
-            Enum.TryParse(securityType, true, out securityTypeEnum);
-            var symbol = Symbol.Create(ticker, securityTypeEnum, market);
-
-            // Act
-            var ldr = new LeanDataReader(filepath);
-            var data = ldr.Parse().ToArray();
-            // Assert
-            Assert.True(symbol.Equals(data.First().Symbol));
-            Assert.AreEqual(data.Length, rowsInfile);
-            Assert.AreEqual(data.Sum(c=>c.Value), sumValue);
-        }
-
-        #region futures
-
         [Test]
         public void ReadFutureChainData()
         {
-            var canonicalFutures = new Dictionary<Symbol,string>()
+            var canonicalFutures = new Dictionary<Symbol, string>()
             {
                 { Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.USA),
                     "ESZ13|ESH14|ESM14|ESU14|ESZ14" },
@@ -68,7 +53,7 @@ namespace QuantConnect.Tests.ToolBox
 
             var tickTypes = new[] { TickType.Trade, TickType.Quote, TickType.OpenInterest };
 
-            var resolutions = new[] {Resolution.Hour, Resolution.Daily };
+            var resolutions = new[] { Resolution.Hour, Resolution.Daily };
 
 
             foreach (var canonical in canonicalFutures)
@@ -77,11 +62,11 @@ namespace QuantConnect.Tests.ToolBox
                 {
                     foreach (var tickType in tickTypes)
                     {
-                        var futures = LoadFutureChain(canonical.Key,_fromDate, tickType, res);
+                        var futures = LoadFutureChain(canonical.Key, _fromDate, tickType, res);
 
                         string chain = string.Join("|", futures.Select(f => f.Value));
 
-                        if (tickType==TickType.Quote) //only quotes have the full chain!
+                        if (tickType == TickType.Quote) //only quotes have the full chain!
                             Assert.AreEqual(canonical.Value, chain);
 
                         foreach (var future in futures)
@@ -138,16 +123,16 @@ namespace QuantConnect.Tests.ToolBox
         public void GenerateDailyAndHourlyFutureDataFromMinutes()
         {
 
-            var tickTypes = new[] {TickType.Trade, TickType.Quote, TickType.OpenInterest };
+            var tickTypes = new[] { TickType.Trade, TickType.Quote, TickType.OpenInterest };
 
             var futures = new[] { Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.USA),
                 Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.USA)};
             var resolutions = new[] { Resolution.Hour, Resolution.Daily };
 
             foreach (var future in futures)
-            foreach (var res in resolutions)
-            foreach (var tickType in tickTypes)
-                ConvertMinuteFuturesData(future, tickType, res);
+                foreach (var res in resolutions)
+                    foreach (var tickType in tickTypes)
+                        ConvertMinuteFuturesData(future, tickType, res);
         }
 
         private void ConvertMinuteFuturesData(Symbol canonical, TickType tickType, Resolution outputResolution, Resolution inputResolution = Resolution.Minute)
@@ -185,7 +170,7 @@ namespace QuantConnect.Tests.ToolBox
                     {
                         futures[future.Value] = future;
                         var config = new SubscriptionDataConfig(LeanData.GetDataType(outputResolution, tickType),
-                                                                future, inputResolution,TimeZones.NewYork, TimeZones.NewYork,
+                                                                future, inputResolution, TimeZones.NewYork, TimeZones.NewYork,
                                                                 false, false, false, false, tickType);
                         configs[future.Value] = config;
 
@@ -245,7 +230,7 @@ namespace QuantConnect.Tests.ToolBox
             var filepath = GenerateFilepathForTesting(_dataDirectory, securityType, market, resolution, ticker, fileName);
 
             SecurityType securityTypeEnum;
-            Enum.TryParse(securityType, true, out securityTypeEnum);    
+            Enum.TryParse(securityType, true, out securityTypeEnum);
             var symbol = Symbol.Create(ticker, securityTypeEnum, market);
 
             // Act
@@ -254,7 +239,7 @@ namespace QuantConnect.Tests.ToolBox
             // Assert
             Assert.True(symbol.Equals(data.First().Symbol));
             Assert.AreEqual(data.Length, rowsInfile);
-            Assert.AreEqual(data.Sum(c=>c.Value), sumValue);
+            Assert.AreEqual(data.Sum(c => c.Value), sumValue);
         }
 
         public static object[] SpotMarketCases =
