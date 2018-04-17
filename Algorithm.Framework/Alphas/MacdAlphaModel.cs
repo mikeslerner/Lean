@@ -95,7 +95,7 @@ namespace QuantConnect.Algorithm.Framework.Alphas
                 }
 
                 var insightPeriod = _resolution.ToTimeSpan().Multiply(_fastPeriod);
-                var insight = new Insight(sd.Security.Symbol, InsightType.Price, direction, insightPeriod);
+                var insight = Insight.Price(sd.Security.Symbol, insightPeriod, direction);
                 sd.PreviousDirection = insight.Direction;
                 yield return insight;
             }
@@ -139,7 +139,7 @@ namespace QuantConnect.Algorithm.Framework.Alphas
                 Consolidator = algorithm.ResolveConsolidator(security.Symbol, resolution);
                 algorithm.SubscriptionManager.AddConsolidator(security.Symbol, Consolidator);
 
-                MACD = algorithm.MACD(security.Symbol, fastPeriod, slowPeriod, signalPeriod, movingAverageType);
+                MACD = new MovingAverageConvergenceDivergence(fastPeriod, slowPeriod, signalPeriod, movingAverageType);
 
                 algorithm.RegisterIndicator(security.Symbol, MACD, Consolidator);
             }

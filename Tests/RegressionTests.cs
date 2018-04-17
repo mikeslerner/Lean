@@ -711,25 +711,25 @@ namespace QuantConnect.Tests
 
             var basicTemplateCryptoAlgorithmStatistics = new Dictionary<string, string>
             {
-                {"Total Trades", "25"},
+                {"Total Trades", "10"},
                 {"Average Win", "0%"},
-                {"Average Loss", "-0.46%"},
-                {"Compounding Annual Return", "-100.000%"},
-                {"Drawdown", "5.400%"},
+                {"Average Loss", "-0.17%"},
+                {"Compounding Annual Return", "-99.993%"},
+                {"Drawdown", "3.800%"},
                 {"Expectancy", "-1"},
-                {"Net Profit", "-5.603%"},
-                {"Sharpe Ratio", "-19.82"},
+                {"Net Profit", "-2.577%"},
+                {"Sharpe Ratio", "-15.89"},
                 {"Loss Rate", "100%"},
                 {"Win Rate", "0%"},
                 {"Profit-Loss Ratio", "0"},
-                {"Alpha", "-11.165"},
-                {"Beta", "585.081"},
-                {"Annual Standard Deviation", "0.36"},
-                {"Annual Variance", "0.129"},
-                {"Information Ratio", "-19.873"},
-                {"Tracking Error", "0.359"},
-                {"Treynor Ratio", "-0.012"},
-                {"Total Fees", "$6076.49"}
+                {"Alpha", "-5.559"},
+                {"Beta", "333.506"},
+                {"Annual Standard Deviation", "0.205"},
+                {"Annual Variance", "0.042"},
+                {"Information Ratio", "-15.972"},
+                {"Tracking Error", "0.204"},
+                {"Treynor Ratio", "-0.01"},
+                {"Total Fees", "$96.51"}
             };
 
             var indicatorSuiteAlgorithmStatistics = new Dictionary<string, string>
@@ -852,25 +852,61 @@ namespace QuantConnect.Tests
 
             var cancelOpenOrdersRegressionAlgorithmStatistics = new Dictionary<string, string>
             {
-                {"Total Trades", "1"},
+                {"Total Trades", "2"},
                 {"Average Win", "0%"},
                 {"Average Loss", "0%"},
-                {"Compounding Annual Return", "-99.962%"},
-                {"Drawdown", "3.700%"},
+                {"Compounding Annual Return", "-100.000%"},
+                {"Drawdown", "5.800%"},
                 {"Expectancy", "0"},
-                {"Net Profit", "-2.133%"},
-                {"Sharpe Ratio", "-11.196"},
+                {"Net Profit", "-3.339%"},
+                {"Sharpe Ratio", "-11.206"},
                 {"Loss Rate", "0%"},
                 {"Win Rate", "0%"},
                 {"Profit-Loss Ratio", "0"},
-                {"Alpha", "-5.382"},
-                {"Beta", "390.206"},
-                {"Annual Standard Deviation", "0.24"},
-                {"Annual Variance", "0.058"},
-                {"Information Ratio", "-11.254"},
-                {"Tracking Error", "0.239"},
+                {"Alpha", "-8.422"},
+                {"Beta", "610.348"},
+                {"Annual Standard Deviation", "0.375"},
+                {"Annual Variance", "0.141"},
+                {"Information Ratio", "-11.243"},
+                {"Tracking Error", "0.375"},
                 {"Treynor Ratio", "-0.007"},
                 {"Total Fees", "$0.00"}
+            };
+
+            var scheduledUniverseSelectionModelRegressionAlgorithmStatistics = new Dictionary<string, string>
+            {
+                {"Total Trades", "17"},
+                {"Average Win", "0.26%"},
+                {"Average Loss", "-0.11%"},
+                {"Compounding Annual Return", "26.961%"},
+                {"Drawdown", "0.700%"},
+                {"Expectancy", "1.895"},
+                {"Net Profit", "2.115%"},
+                {"Sharpe Ratio", "4.218"},
+                {"Loss Rate", "12%"},
+                {"Win Rate", "88%"},
+                {"Profit-Loss Ratio", "2.31"},
+                {"Alpha", "0.327"},
+                {"Beta", "-9.439"},
+                {"Annual Standard Deviation", "0.043"},
+                {"Annual Variance", "0.002"},
+                {"Information Ratio", "3.864"},
+                {"Tracking Error", "0.043"},
+                {"Treynor Ratio", "-0.019"},
+                {"Total Fees", "$0.00"},
+                {"Total Insights Generated", "54"},
+                {"Total Insights Closed", "52"},
+                {"Total Insights Analysis Completed", "46"},
+                {"Long Insight Count", "54"},
+                {"Short Insight Count", "0"},
+                {"Long/Short Ratio", "100%"},
+                {"Estimated Monthly Alpha Value", "$0"},
+                {"Total Accumulated Estimated Alpha Value", "$0"},
+                {"Mean Population Estimated Insight Value", "$0"},
+                {"Mean Population Direction", "43.4783%"},
+                {"Mean Population Magnitude", "0%"},
+                {"Rolling Averaged Population Direction", "65.5952%"},
+                {"Rolling Averaged Population Magnitude", "0%"},
             };
 
             return new List<AlgorithmStatisticsTestParameters>
@@ -913,6 +949,7 @@ namespace QuantConnect.Tests
                 new AlgorithmStatisticsTestParameters("VolumeWeightedAveragePriceExecutionModelRegressionAlgorithm", volumeWeightedAveragePriceExecutionModelRegressionAlgorithmStatistics, Language.CSharp),
                 new AlgorithmStatisticsTestParameters("StandardDeviationExecutionModelRegressionAlgorithm", standardDeviationExecutionModelRegressionAlgorithmStatistics, Language.CSharp),
                 new AlgorithmStatisticsTestParameters("CancelOpenOrdersRegressionAlgorithm", cancelOpenOrdersRegressionAlgorithmStatistics, Language.CSharp),
+                new AlgorithmStatisticsTestParameters("ScheduledUniverseSelectionModelRegressionAlgorithm", scheduledUniverseSelectionModelRegressionAlgorithmStatistics, Language.CSharp),
 
                 // Python
                 // new AlgorithmStatisticsTestParameters("BasicTemplateFuturesAlgorithmDaily", basicTemplateFuturesAlgorithmDailyStatistics, Language.Python),
@@ -945,6 +982,7 @@ namespace QuantConnect.Tests
                 new AlgorithmStatisticsTestParameters("CustomIndicatorAlgorithm", basicTemplateStatistics, Language.Python),
                 new AlgorithmStatisticsTestParameters("BasicTemplateCryptoAlgorithm", basicTemplateCryptoAlgorithmStatistics, Language.Python),
                 new AlgorithmStatisticsTestParameters("IndicatorSuiteAlgorithm", indicatorSuiteAlgorithmStatistics, Language.Python),
+                new AlgorithmStatisticsTestParameters("ScheduledUniverseSelectionModelRegressionAlgorithm", scheduledUniverseSelectionModelRegressionAlgorithmStatistics, Language.Python),
 
                 // FSharp
                 // new AlgorithmStatisticsTestParameters("BasicTemplateAlgorithm", basicTemplateStatistics, Language.FSharp),
