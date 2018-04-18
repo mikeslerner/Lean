@@ -372,12 +372,35 @@ namespace QuantConnect.Tests.Engine.DataFeeds
             var dataFolder = "../../../Data";
             var filepath = LeanDataReaderTests.GenerateFilepathForTesting(dataFolder, securityType, market, resolution, ticker, fileName);
             var leanDataReader = new LeanDataReader(filepath);
-            var data = leanDataReader.Parse().ToArray();
+            var data = leanDataReader.Parse();
             var converter = new PandasConverter();
             // Act
             dynamic df = converter.GetDataFrame(data);
             // Assert
             Assert.AreEqual(df.shape[0].AsManagedObject(typeof(int)), rowsInfile);
+
+            int columnsNumber = df.shape[1].AsManagedObject(typeof(int));
+
+            if (columnsNumber == 3 || columnsNumber == 6)
+            {
+                dynamic sub_df = df.get("askprice");
+                if (sub_df == null)
+                {
+                    // Equity Tick case
+                    Assert.AreEqual(df.get("lastprice").sum().AsManagedObject(typeof(double)), sumValue, 1e-4);
+                }
+                else
+                {
+                    // quote and trade bar tick cases
+                    double actualSum = df.get("askprice").sum().AsManagedObject(typeof(double));
+                    actualSum += df.get("bidprice").sum().AsManagedObject(typeof(double));
+                    Assert.AreEqual(actualSum / 2, sumValue, 1e-4);
+                }
+            }
+            else
+            {
+                Assert.AreEqual(df.get("close").sum().AsManagedObject(typeof(double)), sumValue, 1e-4);
+            }
         }
 
         public IEnumerable<Slice> GetHistory<T>(Symbol symbol, Resolution resolution, IEnumerable<T> data)
